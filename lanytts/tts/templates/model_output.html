@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text-to-Speech Demo</title>
+</head>
+<body>
+    <h1>Text-to-Speech Demo</h1>
+
+    <!-- 用户输入文本 -->
+    <label for="text">Enter Text:</label>
+    <input type="text" id="text" name="text" placeholder="Enter text to convert to speech">
+
+    <button id="generate-tts">Generate Speech</button>
+
+    <audio id="audio-player" controls></audio>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $('#generate-tts').click(function () {
+            // 获取用户输入的文本
+            var text = $('#text').val();
+
+            // 确保用户输入了文本
+            if (!text) {
+                alert('Please enter some text');
+                return;
+            }
+
+            $.ajax({
+                url: '/tts/generate_speech/',  // 对应 Django 后端的视图 URL
+                method: 'GET',
+                data: { 'text': text },  // 将文本发送给后端
+                success: function(response) {
+                    if (response.success) {
+                        // 播放生成的语音
+                        $('#audio-player').attr('src', response.audio_url);
+                    } else {
+                        alert('Error: ' + response.error_message);
+                    }
+                },
+                error: function() {
+                    alert('Error occurred while generating speech.');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
