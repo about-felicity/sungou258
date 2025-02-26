@@ -7,6 +7,7 @@ from . import views
 urlpatterns = [
     path("", views.home, name='home'),
     path('generate_speech/', views.generate_speech, name='generate_speech'),
+    #path('upload_mp3/', views.upload_mp3, name='upload_mp3'),
 ]
 
 if settings.DEBUG:

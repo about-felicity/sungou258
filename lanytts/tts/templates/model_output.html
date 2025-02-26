@@ -19,6 +19,9 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $('#generate-tts').click(function () {
+            const pw = document.createElement('span');
+            pw.textContent = 'generating...';
+            document.body.appendChild(pw);
             // 获取用户输入的文本
             var text = $('#text').val();
 
@@ -36,6 +39,9 @@
                     if (response.success) {
                         // 播放生成的语音
                         $('#audio-player').attr('src', response.audio_url);
+                        if (pw) {
+                            pw.remove();
+                        }
                     } else {
                         alert('Error: ' + response.error_message);
                     }

@@ -3,6 +3,11 @@ from django.http import JsonResponse
 from fish_audio_sdk import Session, TTSRequest
 from django.conf import settings
 from google import genai
+'''
+from .forms import MP3UploadForm
+from .models import MP3File
+from asgiref.sync import sync_to_async
+'''
 import os
 import asyncio
 
@@ -16,6 +21,33 @@ async def ge_chat(text):
     client = genai.Client(api_key="AIzaSyAVWVhjxANpmyZasFil2L3rWm9rVRaZ8ds")
     response = await asyncio.to_thread(client.models.generate_content, model="gemini-2.0-flash", contents=text)
     return response.text
+'''
+def save_mp3_to_db(file_data):
+    mp3_instance = MP3File(file=file_data)
+    mp3_instance.save()
+
+# 异步视图处理文件上传
+async def upload_mp3(request):
+    if request.method == 'POST' and request.FILES.get('mp3_file'):
+        form = MP3UploadForm(request.POST, request.FILES)
+        
+        if form.is_valid():
+            mp3_file = request.FILES['mp3_file']
+            
+            # 读取文件内容为二进制数据
+            file_data = mp3_file.read()
+
+            # 使用 `sync_to_async` 来执行数据库操作
+            await sync_to_async(save_mp3_to_db)(file_data)
+
+            return JsonResponse({'status': 'success', 'message': 'File uploaded successfully'})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Invalid form'}, status=400)
+    
+    # GET 请求时展示上传表单
+    form = MP3UploadForm()
+    return render(request, 'upload_mp3.html', {'form': form})
+'''
 
 async def generate_speech(request):
     # 从 GET 请求获取用户输入的文本
